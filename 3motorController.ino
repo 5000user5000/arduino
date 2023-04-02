@@ -1,41 +1,65 @@
-//這是控制2個servo和一個stepper的程式
+// 來源網址:https://sites.google.com/view/rayarduino/step-motor?pli=1
+//==========================================================================
 
 #include <Servo.h>
-#include <Stepper.h>
+#include <Stepper.h>                        //含入程式庫 Stepper.h
+const int stepsPerRevolution = 2048;        //設定步進馬達轉一圈為 2048步
 
-const int stepsPerRevolution = 2038;
-
+Stepper myStepper = Stepper(stepsPerRevolution, 11, 9, 10, 8);       //因為步進馬達28BYJ-48 和程式庫 Stepper.h 的要求，這𥚃 9 和 10 不可互調
 Servo servo1;  
 Servo servo2;
-Stepper myStepper = Stepper(stepsPerRevolution, 4, 5, 6, 7); // 驅動板的 pin 1~4 接到 arduino 的pin 4~7
+
+#define servo1Pin 12 //定義伺服馬達腳位
+#define servo2Pin 13 
+
+#define servo1int 88 //定義伺服馬達1的初始位置，即為前輪方向置中的位置
+#define servo2int 0  //定義伺服馬達2的初始位置，即為機翼未升起的位置
+
+#define wheelDia 52 //輪子半徑(mm)
 
 void setup() {
-  servo1.attach(9);  // attaches the servo on pin 9 to the servo object
-  servo2.attach(10);
+ servo1.attach(servo1Pin);
+ servo2.attach(servo2Pin);
 }
 
 void loop() {
   initial();        // 馬達位置歸零
-  myStepper.setSpeed(5);
-  myStepper.step(stepsPerRevolution);
-  delay(2000);      // 執行後停止兩秒
+  delay(5000);      // 等待5秒
   
-  turn();    // 左右伺服馬達同樣各轉90度        
-  delay(2000);      // 執行後停止兩秒
-  
-  
-  exit(0); //跳離，這樣就會停止loop
-  
-}
+  myStepper.setSpeed(15);                   // 角速度(PRM)，範圍0~15
+  myStepper.step(-1 * stepsPerRevolution);  //乘上-1表示前進
+  delay(1000);                              // 執行後停止2秒
 
-/* 以下為副程式宣告 */
+  servo1.write(servo1int + 20);             //車體左轉       
+  delay(1000);
+
+  myStepper.setSpeed(15);
+  myStepper.step(-1 * stepsPerRevolution);
+  delay(1000);
+
+  servo1.write(servo1int - 20);             //車體右轉 
+  delay(1000);
+  
+  myStepper.setSpeed(15);
+  myStepper.step(-1 * stepsPerRevolution);
+  delay(1000);   
+
+  servo1.write(servo1int);                  //車體直行
+  delay(1000);
+  
+  myStepper.setSpeed(15);
+  myStepper.step(-1 * stepsPerRevolution);
+  delay(1000);   
+
+  servo2.write(servo2int + 90);             //機翼升起
+  delay(1000);
+
+  myStepper.setSpeed(15);
+  myStepper.step(-4 * stepsPerRevolution);
+  delay(1000);   
+}
 
 void initial(){
-  servo1.write(0);
-  servo2.write(0);
-}
-
-void turn() {
-  servo1.write(90);
-  servo2.write(90);
+  servo1.write(servo1int);
+  servo2.write(servo2int);
 }
