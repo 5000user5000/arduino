@@ -27,7 +27,7 @@ Servo servo2;  //控制機翼升降
 void initial(int delaytime=5000);
 void Stepper_forward(int steps,int delaytime=1000);
 void Servo_turn(int angle,int delaytime=1000);
-void Servo_updown(int angle,int delaytime=1000);
+void Servo_updown(int current_angle ,int next_angle,int delaytime=250);
 
 void setup() {
     servo1.attach(servo1Pin);
@@ -41,9 +41,9 @@ void loop() {
     int steps = -1 * stepsPerRevolution;      //乘上-1表示前進
     
     Stepper_forward(5.5*steps); //輪胎轉一圈約16.3cm，到163cm左右(至少大於150)時再升起。
-    Servo_updown(servo2int + wingrise); //機翼升起
+    Servo_updown(servo2int , servo2int + wingrise); //機翼升起
     Stepper_forward(3.5*steps); 
-    Servo_updown(servo2int); //收起
+    Servo_updown(servo2int + wingrise , servo2int); //收起
     exit(0); //跳離
 
 }
@@ -68,9 +68,13 @@ void Servo_turn(int angle,int delaytime=1000)
     delay(delaytime);
 }
 
-//servo 升降
-void Servo_updown(int angle,int delaytime=1000)
+//servo 升降，並把要上升的角度分拆成5份去上升，比較穩定
+void Servo_updown(int current_angle ,int next_angle,int delaytime=250)
 {
-    servo2.write(angle);
-    delay(delaytime);
+    int angle_change = next_angle - current_angle; //需要變動的角度
+    for (float ratio = 0.2 ; ratio <= 1; ratio+=0.2) 
+    {
+        servo2.write(current_angle+ratio*angle_change);
+        delay(delaytime);
+     }
 }
