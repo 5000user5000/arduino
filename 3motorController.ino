@@ -14,10 +14,12 @@ Servo servo2;  //控制機翼升降
 #define servo1Pin 12 
 #define servo2Pin 13 
 
-#define servo1int 88 //定義伺服馬達1的初始位置，即為前輪方向置中的位置
+#define servo1int 83 //定義伺服馬達1的初始位置，即為前輪方向置中的位置 ， 經測試83跑動才是直線
 #define servo2int 0  //定義伺服馬達2的初始位置，即為機翼未升起的位置
 
-#define wheelDia 52 //輪子半徑(mm)
+#define wingrise 100 //機翼升起的角度
+
+#define wheelDia 52 //輪子直徑(mm)
 
 #define motorSpeed 15 //馬達轉速(PRM)
 
@@ -37,25 +39,13 @@ void loop() {
     initial();        // 馬達位置歸零
 
     int steps = -1 * stepsPerRevolution;      //乘上-1表示前進
+    
+    Stepper_forward(5.5*steps); //輪胎轉一圈約16.3cm，到163cm左右(至少大於150)時再升起。
+    Servo_updown(servo2int + wingrise); //機翼升起
+    Stepper_forward(3.5*steps); 
+    Servo_updown(servo2int); //收起
+    exit(0); //跳離
 
-    for (int i = 0; i < 4; i++) {
-        
-        Stepper_forward(steps);
-    
-        if (i == 0) {
-          Servo_turn(servo1int + 20); //車體左轉
-        } 
-        else if (i == 1) {
-          Servo_turn(servo1int - 20); //車體右轉
-        } 
-        else if (i == 3) {
-          Servo_updown(servo2int + 90); //機翼升起
-        } 
-        else {
-          Servo_turn(servo1int); //車體直行
-        }
-    
-    }
 }
 
 //回到初始位置
