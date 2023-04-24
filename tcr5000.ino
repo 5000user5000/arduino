@@ -1,6 +1,3 @@
-
-
-  
 int AnalogPin1 = A0;
 int AnalogPin2 = A1;
 int AnalogPin3 = A2;
@@ -25,10 +22,14 @@ void loop()
   int A_val3 = analogRead(AnalogPin3);
   int A_val4 = analogRead(AnalogPin4);
 
-  Serial.print("Analog data1 = "+A_val);
-  Serial.print(" data2 = "+A_val2);
-  Serial.print(" data3 = "+A_val3);
-  Serial.print(" data4 = "+A_val4);
+  Serial.print("Analog data1 = ");
+  Serial.println(A_val);
+  Serial.print(" data2 = ");
+  Serial.println(A_val2);
+  Serial.print(" data3 = ");
+  Serial.println(A_val3);
+  Serial.print(" data4 = ");
+  Serial.println(A_val4);
   Serial.println("=========");//隔開
   // Serial.println(A_val); 
   //測試用
