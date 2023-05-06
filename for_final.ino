@@ -1,5 +1,4 @@
 #include <Servo.h>
-#include <Stepper.h>                        //含入程式庫 Stepper.h
 
 // for 42 stepper
 const int dirPin = 2;
