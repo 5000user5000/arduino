@@ -3,8 +3,8 @@
 // for 42 stepper
 const int dirPin = 2;
 const int stepPin = 3;
-const int stepsPerRevolution = 200;
-const int pulse_speed = 500;//數字越小stepper越快，最快可以調到400
+const int steps = 1200; //要走多遠，1200 steps = 100 cm，1個step = 1.8度
+const int pulse_speed = 1000;//數字越小stepper越快，最快可以調到400
 
 //TCR5000 循跡
 const int AnalogPin1 = A0;
@@ -23,6 +23,8 @@ Servo servo2;  //控制機翼升降
 #define servo1int 83 //定義伺服馬達1的初始位置，即為前輪方向置中的位置
 #define servo2int 0  //定義伺服馬達2的初始位置，即為機翼未升起的位置
 
+#define wingrise 140 //機翼升起的角度
+
 #define wheelDia 52 //輪子直徑(mm)
 
 
@@ -30,7 +32,7 @@ Servo servo2;  //控制機翼升降
 void initial(int delaytime=5000);
 void Stepper_forward(int steps,int delaytime=1000);
 void Servo_turn(int angle,int delaytime=1000);
-void Servo_updown(int angle,int delaytime=1000);
+void Servo_updown(int current_angle ,int next_angle,int delaytime=250);
 void track_finging(int steps);
 
 void setup() {
@@ -54,15 +56,13 @@ void setup() {
 
 void loop() {
     initial();        // 馬達位置歸零
-
-    int steps = -1 * stepsPerRevolution;      //乘上-1表示前進
     
-    Stepper_forward(4*steps); //剛好能到風區起點
+    Stepper_forward(steps); //剛好能到風區起點
     delay(2000); //讓load cell紀錄當前重量
-    Servo_updown(servo2int + 100); //機翼升起
+    Servo_updown(servo2int , servo2int + wingrise); //機翼升起
     delay(10000); //讓load cell紀錄當前重量
-    Stepper_forward(3.5*steps); 
-    Servo_updown(servo2int); //收起
+    Stepper_forward(steps); 
+    Servo_updown(servo2int + wingrise , servo2int); //收起
     exit(0); //跳離
 
   
@@ -89,18 +89,22 @@ void Stepper_forward(int steps,int delaytime=1000)
     delay(delaytime); // Wait a second
 }
 
-//servo 轉彎
+//servo 轉彎，角度越大就是往左轉
 void Servo_turn(int angle,int delaytime=1000)
 {
     servo1.write(angle);
     delay(delaytime);
 }
 
-//servo 升降
-void Servo_updown(int angle,int delaytime=1000)
+//servo 升降，並把要上升的角度分拆成5份去上升，比較穩定
+void Servo_updown(int current_angle ,int next_angle,int delaytime=250)
 {
-    servo2.write(angle);
-    delay(delaytime);
+    int angle_change = next_angle - current_angle; //需要變動的角度
+    for (float ratio = 0.2 ; ratio <= 1; ratio+=0.2) 
+    {
+        servo2.write(current_angle+ratio*angle_change);
+        delay(delaytime);
+     }
 }
 
 //TCR5000，循跡演算法，可用可不用
