@@ -3,7 +3,7 @@
 // for 42 stepper
 const int dirPin = 2;
 const int stepPin = 3;
-const int steps = 1200; //要走多遠，1200 steps = 100 cm，1個step = 1.8度
+const int total_steps = 1200; //要走多遠，1200 steps = 100 cm，1個step = 1.8度
 const int pulse_speed = 1000;//數字越小stepper越快，最快可以調到400
 
 //TCR5000 循跡
@@ -57,11 +57,11 @@ void setup() {
 void loop() {
     initial();        // 馬達位置歸零
     
-    Stepper_forward(steps); //剛好能到風區起點
+    Stepper_forward(total_steps); //剛好能到風區起點
     delay(2000); //讓load cell紀錄當前重量
     Servo_updown(servo2int , servo2int + wingrise); //機翼升起
     delay(10000); //讓load cell紀錄當前重量
-    Stepper_forward(steps); 
+    Stepper_forward(total_steps); 
     Servo_updown(servo2int + wingrise , servo2int); //收起
     exit(0); //跳離
 
@@ -78,7 +78,7 @@ void initial(int delaytime=5000){
 void Stepper_forward(int steps,int delaytime=1000)
 {
     
-    // Spin motor quickly，發出pulse(High->delay->Low->delay，即為一次pulse )，其間的delay越短，pulse的頻率越高，stepper轉速越快。
+    // Spin motor quickly，發出pulse(High->delay->Low->delay，即為一次pulse )，其間的delay越短，pulse的頻率越高，stepper轉速越快。1個steps = 1個脈衝，轉1.8度，頻率500 Hz->150 
     for(int x = 0; x < steps; x++)
     {
       digitalWrite(stepPin, HIGH);
