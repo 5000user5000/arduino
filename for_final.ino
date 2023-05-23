@@ -23,7 +23,7 @@ Servo servo2;  //控制機翼升降
 #define servo1int 83 //定義伺服馬達1的初始位置，即為前輪方向置中的位置
 #define servo2int 0  //定義伺服馬達2的初始位置，即為機翼未升起的位置
 
-#define wingrise 140 //機翼升起的角度
+#define wingrise 100 //機翼升起的角度
 
 #define wheelDia 52 //輪子直徑(mm)
 
