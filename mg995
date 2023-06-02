@@ -1,0 +1,31 @@
+#include<Servo.h>
+
+//參考 (https://blog.csdn.net/acktomas/article/details/130057003)
+
+Servo servo;
+
+void setup() {
+ servo.attach(3);
+
+}
+
+void loop() {
+  //全速逆時鐘轉
+  servo.writeMicroseconds(1000);
+  delay(2000);
+
+  //也可以和sg90一樣,使用servo.write(degree);
+
+  //停止轉動
+  servo.writeMicroseconds(1500);
+  delay(2000);
+
+  //全速順時鐘轉
+  servo.writeMicroseconds(2000);
+  delay(2000);
+
+   //停止轉動
+  servo.writeMicroseconds(1500);
+  delay(2000);
+
+}
