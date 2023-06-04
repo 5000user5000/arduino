@@ -105,7 +105,7 @@ void Servo_turn(int angle,int delaytime=1000)
     delay(delaytime);
 }
 
-//servo 升降，並把要上升的角度分拆成5份去上升，比較穩定
+//servo 升降，並把要上升的角度分拆成50份去上升，比較穩定
 void Servo_updown(int current_angle ,int next_angle,int delaytime)
 {
     int angle_change = next_angle - current_angle; //需要變動的角度
